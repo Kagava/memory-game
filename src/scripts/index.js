@@ -43,8 +43,9 @@ body.append(firstCard.getCard());
 function addClass(e) {
   const cardTarget = e.target;
   console.log(cardTarget);
-  //   cardTarget.classList.add("game__card--right");
-  //   setTimeout(() => {
-  //     cardTarget.classList.remove("game__card--right");
-  //   }, 1000);
+
+  cardTarget.classList.add("card--clicked");
+  setTimeout(() => {
+    cardTarget.classList.remove("card--clicked");
+  }, 1000);
 }

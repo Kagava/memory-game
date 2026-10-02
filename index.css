@@ -5,12 +5,39 @@
   justify-content: center;
   align-items: center;
   border: 1px solid black;
+  position: relative;
+  overflow: hidden;
 }
 .game__card.game__card--right {
   animation: cardRightAnim 0.5s ease-in-out;
 }
 .game__card.game__card--wrong {
   animation: cardWrongAnim 0.5s ease-in-out;
+}
+.game__card::after, .game__card::before {
+  position: absolute;
+  content: "";
+  width: 50%;
+  height: 100%;
+  display: block;
+  background-color: blue;
+  transition: all 0.5s ease-in-out;
+  transform-origin: top;
+  opacity: 1;
+}
+.game__card::after {
+  left: 0;
+}
+.game__card::before {
+  right: 0;
+}
+.game__card.card--clicked::after {
+  opacity: 0;
+  transform: translateX(-100%) scale(0.7);
+}
+.game__card.card--clicked::before {
+  opacity: 0;
+  transform: translateX(100%) scale(0.7);
 }
 
 @keyframes cardWrongAnim {
