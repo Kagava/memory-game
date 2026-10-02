@@ -5,35 +5,38 @@
   justify-content: center;
   align-items: center;
   border: 1px solid black;
-}
-.game__card.game__card--right {
-  animation: cardRightAnim 0.5s ease-in-out;
-}
-.game__card.game__card--wrong {
-  animation: cardWrongAnim 0.5s ease-in-out;
+  &.game__card--right {
+    animation: cardRightAnim 0.5s ease-in-out;
+  }
+  &.game__card--wrong {
+    animation: cardWrongAnim 0.5s ease-in-out;
+  }
 }
 
 @keyframes cardWrongAnim {
   0% {
     box-shadow: 0px 0px 0px 0px rgba(255, 0, 0, 0.3);
   }
+
   50% {
     box-shadow: 0px 0px 10px 10px rgba(255, 0, 0, 0.3);
   }
+
   100% {
     box-shadow: 0px 0px 0px 0px rgba(255, 0, 0, 0.3);
   }
 }
+
 @keyframes cardRightAnim {
   0% {
     box-shadow: 0px 0px 0px 0px rgba(0, 255, 8, 0.3);
   }
+
   50% {
     box-shadow: 0px 0px 10px 10px rgba(0, 255, 8, 0.3);
   }
+
   100% {
     box-shadow: 0px 0px 0px 0px rgba(0, 255, 8, 0.3);
   }
 }
-
-/*# sourceMappingURL=index.css.map */

@@ -1,3 +1,5 @@
+const body = document.body;
+
 class Card {
   #card = null;
 
@@ -14,6 +16,7 @@ class Card {
   }
 
   getCard() {
+    console.log(this.#card);
     return this.#card;
   }
 
@@ -26,6 +29,22 @@ class Card {
     card.className = "game__card";
     card.textContent = this.#cardValue;
     card.dataset.number = this.#cardNumber;
+
+    card.addEventListener("click", addClass);
+
     this.#setCard(card);
   }
+}
+
+const firstCard = new Card("😀", 1);
+
+body.append(firstCard.getCard());
+
+function addClass(e) {
+  const cardTarget = e.target;
+  console.log(cardTarget);
+  //   cardTarget.classList.add("game__card--right");
+  //   setTimeout(() => {
+  //     cardTarget.classList.remove("game__card--right");
+  //   }, 1000);
 }
