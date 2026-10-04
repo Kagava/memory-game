@@ -4,6 +4,10 @@
   grid-template-rows: repeat(4, 100px);
   gap: 20px;
 }
+.game__grid.grid-no-click {
+  pointer-events: none;
+  cursor: default;
+}
 
 .game__card {
   cursor: pointer;
@@ -17,10 +21,10 @@
   overflow: hidden;
 }
 .game__card.game__card--right {
-  animation: cardRightAnim 0.5s ease-in-out;
+  animation: cardRightAnim 1s ease-in-out;
 }
 .game__card.game__card--wrong {
-  animation: cardWrongAnim 0.5s ease-in-out;
+  animation: cardWrongAnim 1s ease-in-out;
 }
 .game__card::after, .game__card::before {
   position: absolute;
@@ -46,6 +50,9 @@
 .game__card.card--clicked::before {
   opacity: 0;
   transform: translateX(100%) scale(0.7);
+}
+.game__card.game__card-fix {
+  pointer-events: none;
 }
 
 @keyframes cardWrongAnim {

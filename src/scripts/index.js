@@ -8,15 +8,16 @@ class Card {
 
   #cardValue = null; // Value to display
   #cardNumber = null; // Value to compare
+  #cardIndex = null; // id
 
-  constructor(value, number) {
+  constructor(value, number, index) {
     this.#cardValue = value;
     this.#cardNumber = number;
+    this.#cardIndex = index;
     this.#createCard();
   }
 
   getCard() {
-    console.log(this.#card);
     return this.#card;
   }
 
@@ -29,21 +30,10 @@ class Card {
     card.className = "game__card";
     card.textContent = this.#cardValue;
     card.dataset.number = this.#cardNumber;
-
-    card.addEventListener("click", addClass);
+    card.dataset.index = this.#cardIndex;
 
     this.#setCard(card);
   }
-}
-
-function addClass(e) {
-  const cardTarget = e.target;
-  console.log(cardTarget);
-
-  cardTarget.classList.add("card--clicked");
-  setTimeout(() => {
-    cardTarget.classList.remove("card--clicked");
-  }, 1000);
 }
 
 class GameField {
@@ -52,8 +42,36 @@ class GameField {
   #gameMatrix = null;
   #gameGrid = null;
 
+  #openFreeCardFlag = false;
+  #fixedCard = null;
+  #fixedCardIndex = null;
+
   constructor() {
     this.#createBoard();
+  }
+
+  getOpenCardFlag() {
+    return this.#openFreeCardFlag;
+  }
+
+  getFixedCardIndex() {
+    return this.#fixedCardIndex;
+  }
+
+  fixFirst(card) {
+    this.#openFreeCardFlag = true;
+    this.#fixedCard = card;
+    this.#fixedCardIndex = card.dataset.index;
+  }
+
+  checkCards(card) {
+    if (card.dataset.number === this.#fixedCard.dataset.number) {
+      this.#makeRight(card, this.#fixedCard);
+      this.#resetFixedCard();
+    } else {
+      this.#makeWrong(card, this.#fixedCard);
+      this.#resetFixedCard();
+    }
   }
 
   #createBoard() {
@@ -97,7 +115,6 @@ class GameField {
         this.#gameMatrix[i][j] = suffledArray[4 * i + j];
       }
     }
-    console.log(this.#gameMatrix);
   }
 
   #createGameField() {
@@ -109,6 +126,7 @@ class GameField {
   #createGrid() {
     const grid = document.createElement("div");
     grid.className = "game__grid";
+    grid.addEventListener("click", gridClick);
     this.#gameGrid = grid;
   }
 
@@ -117,10 +135,62 @@ class GameField {
       for (let j = 0; j < 4; j++) {
         const currentEmoji = this.#gameMatrix[i][j];
         const emojiIndex = this.#emojiArray.indexOf(currentEmoji);
-        const card = new Card(currentEmoji, emojiIndex);
+        const card = new Card(currentEmoji, emojiIndex, i * 4 + j);
         this.#gameGrid.append(card.getCard());
       }
     }
+  }
+
+  #makeRight(card1, card2) {
+    this.#gameGrid.classList.add("grid-no-click");
+    card1.classList.add("game__card--right");
+    card2.classList.add("game__card--right");
+    card1.classList.add("game__card-fix");
+    card2.classList.add("game__card-fix");
+    setTimeout(() => {
+      card1.classList.remove("game__card--right");
+      card2.classList.remove("game__card--right");
+      this.#gameGrid.classList.remove("grid-no-click");
+    }, 1000);
+  }
+
+  #makeWrong(card1, card2) {
+    console.log(this.#gameGrid);
+    const grid = this.#gameGrid;
+    this.#gameGrid.classList.add("grid-no-click");
+    card1.classList.add("game__card--wrong");
+    card2.classList.add("game__card--wrong");
+    setTimeout(() => {
+      card1.classList.remove("game__card--wrong");
+      card2.classList.remove("game__card--wrong");
+      card1.classList.remove("card--clicked");
+      card2.classList.remove("card--clicked");
+      this.#gameGrid.classList.remove("grid-no-click");
+    }, 1000);
+  }
+
+  #resetFixedCard() {
+    this.#openFreeCardFlag = false;
+    this.#fixedCard = null;
+    this.#fixedCardIndex = null;
+  }
+}
+
+function gridClick(e) {
+  const target = e.target;
+  if (
+    !target.classList.contains("game__card") ||
+    gameFiled.getFixedCardIndex() === target.dataset.index
+  ) {
+    console.log(gameFiled.getFixedCardIndex(), target.dataset.index);
+    return;
+  }
+  console.log(gameFiled.getFixedCardIndex(), target.dataset.index);
+  target.classList.add("card--clicked");
+  if (gameFiled.getOpenCardFlag()) {
+    gameFiled.checkCards(target);
+  } else {
+    gameFiled.fixFirst(target);
   }
 }
 

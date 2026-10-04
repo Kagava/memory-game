@@ -3,4 +3,8 @@
   grid-template-columns: repeat(4, 100px);
   grid-template-rows: repeat(4, 100px);
   gap: 20px;
+  &.grid-no-click {
+    pointer-events: none;
+    cursor: default;
+  }
 }

@@ -9,10 +9,10 @@
   position: relative;
   overflow: hidden;
   &.game__card--right {
-    animation: cardRightAnim 0.5s ease-in-out;
+    animation: cardRightAnim 1s ease-in-out;
   }
   &.game__card--wrong {
-    animation: cardWrongAnim 0.5s ease-in-out;
+    animation: cardWrongAnim 1s ease-in-out;
   }
   &::after,
   &::before {
@@ -41,6 +41,9 @@
   &.card--clicked::before {
     opacity: 0;
     transform: translateX(100%) scale(0.7);
+  }
+  &.game__card-fix {
+    pointer-events: none;
   }
 }
 
