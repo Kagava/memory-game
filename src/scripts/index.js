@@ -39,8 +39,14 @@ class Card {
 class GameField {
   #emojiArray = ["😀", "🙈", "🥵", "🥶", "💀", "👽", "👾", "🐷"];
 
+  #valueOfMoves = 0;
+  #valueOfRightPairs = 0;
+
+  #gameContainer = null;
   #gameMatrix = null;
   #gameGrid = null;
+  #movesContainer = null;
+  #pairsContainer = null;
 
   #openFreeCardFlag = false;
   #fixedCard = null;
@@ -65,8 +71,12 @@ class GameField {
   }
 
   checkCards(card) {
+    this.#valueOfMoves++;
+    this.#changeValueOfMoves();
     if (card.dataset.number === this.#fixedCard.dataset.number) {
       this.#makeRight(card, this.#fixedCard);
+      this.#valueOfRightPairs++;
+      this.#changeValueOfRightPairs();
       this.#resetFixedCard();
     } else {
       this.#makeWrong(card, this.#fixedCard);
@@ -75,9 +85,17 @@ class GameField {
   }
 
   #createBoard() {
+    this.#createGameContainer();
     this.#createMatrix();
     this.#suffleArray();
+    this.#createInfo();
     this.#createGameField();
+  }
+
+  #createGameContainer() {
+    const gameContainer = document.createElement("div");
+    gameContainer.className = "game";
+    this.#gameContainer = gameContainer;
   }
 
   #createMatrix() {
@@ -120,7 +138,8 @@ class GameField {
   #createGameField() {
     this.#createGrid();
     this.#fillGrid();
-    body.append(this.#gameGrid);
+    this.#gameContainer.append(this.#gameGrid);
+    body.append(this.#gameContainer);
   }
 
   #createGrid() {
@@ -155,8 +174,6 @@ class GameField {
   }
 
   #makeWrong(card1, card2) {
-    console.log(this.#gameGrid);
-    const grid = this.#gameGrid;
     this.#gameGrid.classList.add("grid-no-click");
     card1.classList.add("game__card--wrong");
     card2.classList.add("game__card--wrong");
@@ -174,6 +191,29 @@ class GameField {
     this.#fixedCard = null;
     this.#fixedCardIndex = null;
   }
+
+  #createInfo() {
+    const movesContainer = document.createElement("div");
+    movesContainer.className = "game__moves-container";
+    movesContainer.textContent = `${this.#valueOfMoves}`;
+    this.#movesContainer = movesContainer;
+
+    const pairsContainer = document.createElement("div");
+    pairsContainer.className = "game__pairs-container";
+    pairsContainer.textContent = `${this.#valueOfRightPairs}/8`;
+    this.#pairsContainer = pairsContainer;
+
+    this.#gameContainer.prepend(this.#pairsContainer);
+    this.#gameContainer.prepend(this.#movesContainer);
+  }
+
+  #changeValueOfMoves() {
+    this.#movesContainer.textContent = `${this.#valueOfMoves}`;
+  }
+
+  #changeValueOfRightPairs() {
+    this.#pairsContainer.textContent = `${this.#valueOfRightPairs}/8`;
+  }
 }
 
 function gridClick(e) {
@@ -182,10 +222,8 @@ function gridClick(e) {
     !target.classList.contains("game__card") ||
     gameFiled.getFixedCardIndex() === target.dataset.index
   ) {
-    console.log(gameFiled.getFixedCardIndex(), target.dataset.index);
     return;
   }
-  console.log(gameFiled.getFixedCardIndex(), target.dataset.index);
   target.classList.add("card--clicked");
   if (gameFiled.getOpenCardFlag()) {
     gameFiled.checkCards(target);
@@ -195,11 +233,3 @@ function gridClick(e) {
 }
 
 const gameFiled = new GameField();
-
-/* 0 1 2 3
-  4 5 6 7
-  8 9 10 11
-  12 13 14 15
-*/
-// Math.floor(x / 4) - i
-// x - 4 * Math.floor(x / 4) - j
