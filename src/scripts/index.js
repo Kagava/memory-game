@@ -88,6 +88,16 @@ class GameField {
     }
   }
 
+  restertGame() {
+    this.#valueOfMoves = 0;
+    this.#valueOfRightPairs = 0;
+    this.#movesContainer.textContent = `${this.#valueOfMoves}`;
+    this.#pairsContainer.textContent = `${this.#valueOfRightPairs}/8`;
+    this.#suffleArray();
+    this.#gameGrid.innerHTML = "";
+    this.#fillGrid();
+  }
+
   #createBoard() {
     this.#createGameContainer();
     this.#createMatrix();
@@ -299,6 +309,7 @@ class ModalWindow {
     const newGameButton = document.createElement("button");
     newGameButton.className = "modal__new-game";
     newGameButton.textContent = "НОВАЯ ИГРА";
+    newGameButton.addEventListener("click", newGame);
     const modalContent = this.#modal.querySelector(".modal__content");
     modalContent.innerHtml = "awe";
     modalContent.append(movesContainer);
@@ -324,6 +335,11 @@ function gridClick(e) {
 
 function endGame() {
   gameModal.openModalEnd(gameFiled.getMetrix());
+}
+
+function newGame() {
+  console.log("NEW GAME");
+  gameFiled.restertGame();
 }
 
 const gameModal = new ModalWindow();
