@@ -56,6 +56,10 @@ class GameField {
     this.#createBoard();
   }
 
+  getMetrix() {
+    return { moves: this.#valueOfMoves };
+  }
+
   getOpenCardFlag() {
     return this.#openFreeCardFlag;
   }
@@ -213,6 +217,92 @@ class GameField {
 
   #changeValueOfRightPairs() {
     this.#pairsContainer.textContent = `${this.#valueOfRightPairs}/8`;
+    if (this.#valueOfRightPairs === 1) {
+      endGame();
+    }
+  }
+}
+
+class ModalWindow {
+  #modal = null;
+  #curtain = null;
+
+  constructor() {
+    this.#createModal();
+  }
+
+  openModalEnd(metrix) {
+    if (!this.#modal) {
+      this.#createModal();
+    }
+    this.#fillModalHeader("Winner winner, chicken dinner!".toUpperCase());
+    this.#endModal(metrix);
+    this.#curtain.classList.remove("curtain--closed");
+  }
+
+  openModalWinners() {
+    if (!this.#modal) {
+      this.#createModal();
+    }
+    console.log("OPEN");
+  }
+
+  #createModal() {
+    const curtain = document.createElement("div");
+    curtain.className = "curtain curtain--closed";
+    // curtain.className = "curtain";
+    curtain.addEventListener("click", this.#closeModal.bind(this));
+    const modal = document.createElement("div");
+    modal.className = "modal";
+    this.#modal = modal;
+    this.#fillDefaultModal();
+
+    curtain.append(modal);
+    this.#curtain = curtain;
+    body.append(this.#curtain);
+  }
+
+  #closeModal(e) {
+    const target = e.target;
+    if (target.classList.contains("modal")) {
+      return;
+    }
+    console.log(target);
+    this.#curtain.classList.add("curtain--closed");
+  }
+
+  #fillDefaultModal() {
+    const closeButton = document.createElement("button");
+    closeButton.className = "modal__close-button";
+    closeButton.textContent = "Закрыть";
+    const header = document.createElement("h2");
+    header.className = "modal__header";
+    const modalContent = document.createElement("div");
+    modalContent.className = "modal__content";
+
+    this.#modal.append(closeButton);
+    this.#modal.append(header);
+    this.#modal.append(modalContent);
+  }
+
+  #fillModalHeader(headerText) {
+    const header = this.#modal.querySelector(".modal__header");
+    header.textContent = headerText;
+  }
+
+  #endModal(metrix) {
+    const movesContainer = document.createElement("div");
+    console.log(metrix);
+    movesContainer.className = "modal__moves";
+    movesContainer.innerText = `Количество ходов ${metrix.moves}`;
+
+    const newGameButton = document.createElement("button");
+    newGameButton.className = "modal__new-game";
+    newGameButton.textContent = "НОВАЯ ИГРА";
+    const modalContent = this.#modal.querySelector(".modal__content");
+    modalContent.innerHtml = "awe";
+    modalContent.append(movesContainer);
+    modalContent.append(newGameButton);
   }
 }
 
@@ -231,5 +321,11 @@ function gridClick(e) {
     gameFiled.fixFirst(target);
   }
 }
+
+function endGame() {
+  gameModal.openModalEnd(gameFiled.getMetrix());
+}
+
+const gameModal = new ModalWindow();
 
 const gameFiled = new GameField();

@@ -1,3 +1,8 @@
+body,
+h2 {
+  margin: 0;
+}
+
 .game__grid {
   display: grid;
   grid-template-columns: repeat(4, 100px);
@@ -76,6 +81,25 @@
   100% {
     box-shadow: 0px 0px 0px 0px rgba(0, 255, 8, 0.3);
   }
+}
+.curtain {
+  width: 100dvw;
+  height: 100dvh;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.185);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.curtain--closed {
+  display: none;
+}
+
+.modal {
+  display: flex;
+  width: 400px;
+  height: 400px;
+  background-color: antiquewhite;
 }
 
 /*# sourceMappingURL=index.css.map */
