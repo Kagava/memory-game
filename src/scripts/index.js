@@ -227,7 +227,7 @@ class GameField {
 
   #changeValueOfRightPairs() {
     this.#pairsContainer.textContent = `${this.#valueOfRightPairs}/8`;
-    if (this.#valueOfRightPairs === 1) {
+    if (this.#valueOfRightPairs === 8) {
       endGame();
     }
   }
