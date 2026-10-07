@@ -92,8 +92,8 @@ class GameField {
   restertGame() {
     this.#valueOfMoves = 0;
     this.#valueOfRightPairs = 0;
-    this.#movesContainer.textContent = `${this.#valueOfMoves}`;
-    this.#pairsContainer.textContent = `${this.#valueOfRightPairs}/8`;
+    this.#movesContainer.textContent = `Ход: ${this.#valueOfMoves}`;
+    this.#pairsContainer.textContent = `Верные пары: ${this.#valueOfRightPairs}/8`;
     this.#suffleArray();
     this.#gameGrid.innerHTML = "";
     this.#fillGrid();
@@ -208,27 +208,30 @@ class GameField {
   }
 
   #createInfo() {
+    const gameStat = document.createElement("div");
+    gameStat.className = "game__stat";
     const movesContainer = document.createElement("div");
     movesContainer.className = "game__moves-container";
-    movesContainer.textContent = `${this.#valueOfMoves}`;
+    movesContainer.textContent = `Ход: ${this.#valueOfMoves}`;
     this.#movesContainer = movesContainer;
 
     const pairsContainer = document.createElement("div");
     pairsContainer.className = "game__pairs-container";
-    pairsContainer.textContent = `${this.#valueOfRightPairs}/8`;
+    pairsContainer.textContent = `Верные пары: ${this.#valueOfRightPairs}/8`;
     this.#pairsContainer = pairsContainer;
 
-    this.#gameContainer.prepend(this.#pairsContainer);
-    this.#gameContainer.prepend(this.#movesContainer);
+    gameStat.append(this.#movesContainer);
+    gameStat.append(this.#pairsContainer);
+    this.#gameContainer.prepend(gameStat);
   }
 
   #changeValueOfMoves() {
-    this.#movesContainer.textContent = `${this.#valueOfMoves}`;
+    this.#movesContainer.textContent = `Ход: ${this.#valueOfMoves}`;
   }
 
   #changeValueOfRightPairs() {
-    this.#pairsContainer.textContent = `${this.#valueOfRightPairs}/8`;
-    if (this.#valueOfRightPairs === 1) {
+    this.#pairsContainer.textContent = `Верные пары: ${this.#valueOfRightPairs}/8`;
+    if (this.#valueOfRightPairs === 8) {
       endGame();
     }
   }
@@ -311,8 +314,8 @@ class ModalWindow {
 
   #fillDefaultModal() {
     const closeButton = document.createElement("button");
-    closeButton.className = "modal__close-button";
-    closeButton.textContent = "Закрыть";
+    closeButton.className = "modal__close-button modal__button";
+    closeButton.textContent = "X";
     const header = document.createElement("h2");
     header.className = "modal__header";
     const modalContent = document.createElement("div");
@@ -334,10 +337,14 @@ class ModalWindow {
     movesContainer.innerText = `Количество ходов ${metrix.moves}`;
 
     const newGameButton = document.createElement("button");
-    newGameButton.className = "modal__new-game";
+    newGameButton.className = "modal__new-game modal__button";
     newGameButton.textContent = "НОВАЯ ИГРА";
     newGameButton.addEventListener("click", newGame);
     const modalContent = this.#modal.querySelector(".modal__content");
+    if (modalContent.classList.contains("leader")) {
+      modalContent.classList.remove("leader");
+    }
+    modalContent.classList.add("new");
     modalContent.innerHTML = "";
     modalContent.append(movesContainer);
     modalContent.append(newGameButton);
@@ -345,6 +352,10 @@ class ModalWindow {
 
   #leaderboardModal(data) {
     const modalContent = this.#modal.querySelector(".modal__content");
+    if (modalContent.classList.contains("new")) {
+      modalContent.classList.remove("new");
+    }
+    modalContent.classList.add("leader");
     modalContent.innerHTML = "";
     const itemHeader = document.createElement("div");
     itemHeader.className = "modal__winner-item-header";
