@@ -59,9 +59,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 3px solid bisque;
+  border: 5px solid bisque;
   position: relative;
   overflow: hidden;
+  transition: border-color 0.3s ease-in-out;
+}
+.game__card:hover {
+  border-color: rgb(255, 115, 0);
 }
 .game__card.game__card--right {
   animation: cardRightAnim 1s ease-in-out;
