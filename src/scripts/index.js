@@ -358,6 +358,13 @@ class ModalWindow {
     modalContent.classList.add("leader");
 
     modalContent.replaceChildren();
+    if (data.type) {
+      const emptyResults = document.createElement("div");
+      emptyResults.className = "modal__empty";
+      emptyResults.textContent = data.value;
+      modalContent.append(emptyResults);
+      return;
+    }
     const itemHeader = document.createElement("div");
     itemHeader.className = "modal__winner-item-header";
     const placeHeader = document.createElement("div");
@@ -404,6 +411,9 @@ class LocalStorage {
 
   #getDataFromLc() {
     this.#leaderboardObj = JSON.parse(localStorage.getItem(lbKey));
+    if (!this.#leaderboardObj) {
+      return;
+    }
     const copyLb = this.#leaderboardObj.slice();
     this.#leaderboardObj = copyLb.sort((a, b) => {
       if (a.moves > b.moves) {
@@ -463,7 +473,10 @@ function newGame() {
 
 function openLeaderBoard() {
   const lc = new LocalStorage();
-  const data = lc.getData();
+  let data = lc.getData();
+  if (!data) {
+    data = { type: "empty", value: "Пока нет результатов" };
+  }
   gameModal.openModalWinners(data);
 }
 
