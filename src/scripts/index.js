@@ -1,4 +1,5 @@
 const body = document.body;
+const lbKey = "LEADERBOARD";
 
 class Card {
   #card = null;
@@ -311,9 +312,17 @@ class ModalWindow {
     newGameButton.textContent = "НОВАЯ ИГРА";
     newGameButton.addEventListener("click", newGame);
     const modalContent = this.#modal.querySelector(".modal__content");
-    modalContent.innerHtml = "awe";
+    modalContent.innerHTML = "";
     modalContent.append(movesContainer);
     modalContent.append(newGameButton);
+  }
+}
+
+class LocalStorage {
+  #leaderboardObj = null;
+
+  constructor() {
+    localStorage.getItem(lbKey);
   }
 }
 
@@ -334,11 +343,30 @@ function gridClick(e) {
 }
 
 function endGame() {
-  gameModal.openModalEnd(gameFiled.getMetrix());
+  const moves = gameFiled.getMetrix();
+  const date = new Date();
+  const currentDate = `${String(date.getDay()).padStart(2, 0)}:${String(date.getMonth()).padStart(2, 0)}:${date.getFullYear()}`;
+  console.log(currentDate);
+
+  gameModal.openModalEnd(moves);
+
+  const lb = JSON.parse(localStorage.getItem(lbKey));
+
+  const newRecord = {
+    moves,
+    time: currentDate,
+  };
+
+  if (!lb) {
+    const lcArray = [newRecord];
+    localStorage.setItem(lbKey, JSON.stringify(lcArray));
+  } else {
+    lb.push(newRecord);
+    localStorage.setItem(lbKey, JSON.stringify(lb));
+  }
 }
 
 function newGame() {
-  console.log("NEW GAME");
   gameFiled.restertGame();
 }
 
