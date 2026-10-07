@@ -234,6 +234,31 @@ class GameField {
   }
 }
 
+class Header {
+  constructor() {
+    this.#createHeader();
+  }
+
+  #createHeader() {
+    const header = document.createElement("header");
+    header.className = "header";
+
+    const buttonNewGame = document.createElement("button");
+    buttonNewGame.className = "header__button button-new-game";
+    buttonNewGame.addEventListener("click", newGame);
+    buttonNewGame.textContent = "Новая игра";
+    const buttonLeaderBoard = document.createElement("button");
+    buttonLeaderBoard.className = "header__button button-leaderboard";
+    buttonLeaderBoard.textContent = "Таблица лидеров";
+    buttonLeaderBoard.addEventListener("click", openLeaderBoard);
+
+    header.append(buttonNewGame);
+    header.append(buttonLeaderBoard);
+
+    body.append(header);
+  }
+}
+
 class ModalWindow {
   #modal = null;
   #curtain = null;
@@ -251,11 +276,13 @@ class ModalWindow {
     this.#curtain.classList.remove("curtain--closed");
   }
 
-  openModalWinners() {
+  openModalWinners(data) {
     if (!this.#modal) {
       this.#createModal();
     }
-    console.log("OPEN");
+    this.#fillModalHeader("Leader table".toUpperCase());
+    this.#leaderboardModal(data);
+    this.#curtain.classList.remove("curtain--closed");
   }
 
   #createModal() {
@@ -303,7 +330,6 @@ class ModalWindow {
 
   #endModal(metrix) {
     const movesContainer = document.createElement("div");
-    console.log(metrix);
     movesContainer.className = "modal__moves";
     movesContainer.innerText = `Количество ходов ${metrix.moves}`;
 
@@ -316,13 +342,68 @@ class ModalWindow {
     modalContent.append(movesContainer);
     modalContent.append(newGameButton);
   }
+
+  #leaderboardModal(data) {
+    const modalContent = this.#modal.querySelector(".modal__content");
+    modalContent.innerHTML = "";
+    const itemHeader = document.createElement("div");
+    itemHeader.className = "modal__winner-item-header";
+    const placeHeader = document.createElement("div");
+    const movesHeader = document.createElement("div");
+    const timeHeader = document.createElement("div");
+    placeHeader.textContent = "Место";
+    movesHeader.textContent = "Количество ходов";
+    timeHeader.textContent = "Дата";
+    itemHeader.append(placeHeader);
+    itemHeader.append(movesHeader);
+    itemHeader.append(timeHeader);
+    modalContent.append(itemHeader);
+    for (let i = 0; i < 10; i++) {
+      if (!data[i]) {
+        break;
+      }
+      const item = document.createElement("div");
+      const place = document.createElement("div");
+      const moves = document.createElement("div");
+      const time = document.createElement("div");
+      item.className = "modal__winner-item";
+      place.textContent = `${i + 1}`;
+      moves.textContent = `${data[i].moves}`;
+      const date = new Date(data[i].time);
+      const currentDate = `${String(date.getDay()).padStart(2, 0)}:${String(date.getMonth()).padStart(2, 0)}:${date.getFullYear()}`;
+      time.textContent = `${currentDate}`;
+      item.append(place);
+      item.append(moves);
+      item.append(time);
+      modalContent.append(item);
+    }
+  }
 }
 
 class LocalStorage {
   #leaderboardObj = null;
 
-  constructor() {
-    localStorage.getItem(lbKey);
+  constructor() {}
+
+  getData() {
+    this.#getDataFromLc();
+    return this.#leaderboardObj;
+  }
+
+  #getDataFromLc() {
+    this.#leaderboardObj = JSON.parse(localStorage.getItem(lbKey));
+    const copyLb = this.#leaderboardObj.slice();
+    this.#leaderboardObj = copyLb.sort((a, b) => {
+      if (a.moves > b.moves) {
+        return 1;
+      } else if (a.moves === b.moves) {
+        const aDate = Number(new Date(a.time));
+        const bDate = Number(new Date(b.time));
+        return aDate > bDate ? 1 : -1;
+      } else {
+        return -1;
+      }
+    });
   }
 }
 
@@ -345,16 +426,14 @@ function gridClick(e) {
 function endGame() {
   const moves = gameFiled.getMetrix();
   const date = new Date();
-  const currentDate = `${String(date.getDay()).padStart(2, 0)}:${String(date.getMonth()).padStart(2, 0)}:${date.getFullYear()}`;
-  console.log(currentDate);
 
   gameModal.openModalEnd(moves);
 
   const lb = JSON.parse(localStorage.getItem(lbKey));
 
   const newRecord = {
-    moves,
-    time: currentDate,
+    moves: moves.moves,
+    time: Number(date),
   };
 
   if (!lb) {
@@ -369,6 +448,14 @@ function endGame() {
 function newGame() {
   gameFiled.restertGame();
 }
+
+function openLeaderBoard() {
+  const lc = new LocalStorage();
+  const data = lc.getData();
+  gameModal.openModalWinners(data);
+}
+
+const header = new Header();
 
 const gameModal = new ModalWindow();
 
