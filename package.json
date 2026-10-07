@@ -1,0 +1,21 @@
+{
+  "name": "memory-game",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Kagava/memory-game#readme",
+  "bugs": {
+    "url": "https://github.com/Kagava/memory-game/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kagava/memory-game.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "style": "sass --watch index.scss index.css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

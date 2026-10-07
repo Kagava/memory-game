@@ -1,0 +1,84 @@
+.game__card {
+  font-size: 50px;
+  border-radius: 20px;
+  background-color: #b7c8d0;
+  cursor: pointer;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 5px solid bisque;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease-in-out;
+  &:hover {
+    border-color: rgb(255, 115, 0);
+  }
+
+  &.game__card--right {
+    animation: cardRightAnim 1s ease-in-out;
+  }
+  &.game__card--wrong {
+    animation: cardWrongAnim 1s ease-in-out;
+  }
+  &::after,
+  &::before {
+    position: absolute;
+    content: "";
+    width: 50%;
+    height: 100%;
+    display: block;
+    background-color: bisque;
+    transition: all 0.5s ease-in-out;
+    transform-origin: top;
+    opacity: 1;
+  }
+
+  &::after {
+    left: 0;
+  }
+  &::before {
+    right: 0;
+  }
+
+  &.card--clicked::after {
+    opacity: 0;
+    transform: translateX(-100%) scale(0.7);
+  }
+  &.card--clicked::before {
+    opacity: 0;
+    transform: translateX(100%) scale(0.7);
+  }
+  &.game__card-fix {
+    pointer-events: none;
+  }
+}
+
+@keyframes cardWrongAnim {
+  0% {
+    box-shadow: 0px 0px 0px 0px rgba(255, 0, 0, 0.3);
+  }
+
+  50% {
+    box-shadow: 0px 0px 10px 15px rgba(255, 0, 0, 0.3);
+  }
+
+  100% {
+    box-shadow: 0px 0px 0px 0px rgba(255, 0, 0, 0.3);
+  }
+}
+
+@keyframes cardRightAnim {
+  0% {
+    box-shadow: 0px 0px 0px 0px rgba(0, 255, 8, 0.3);
+  }
+
+  50% {
+    box-shadow: 0px 0px 10px 15px rgba(0, 255, 8, 0.3);
+  }
+
+  100% {
+    box-shadow: 0px 0px 0px 0px rgba(0, 255, 8, 0.3);
+  }
+}

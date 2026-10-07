@@ -1,0 +1,59 @@
+.curtain {
+  width: 100dvw;
+  height: 100dvh;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.185);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+
+  &--closed {
+    display: none;
+  }
+}
+
+.modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  border-radius: 20px;
+  background-color: bisque;
+  color: #2c5569;
+  gap: 10px;
+}
+
+.modal__button {
+  background-color: #a67740;
+  color: #fff0df;
+  cursor: pointer;
+}
+
+.modal__close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border-radius: 50%;
+}
+
+.modal__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  &.leader {
+    display: grid;
+  }
+}
+
+.modal__winner-item,
+.modal__winner-item-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
