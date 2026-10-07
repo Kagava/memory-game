@@ -95,7 +95,7 @@ class GameField {
     this.#movesContainer.textContent = `Ход: ${this.#valueOfMoves}`;
     this.#pairsContainer.textContent = `Верные пары: ${this.#valueOfRightPairs}/8`;
     this.#suffleArray();
-    this.#gameGrid.innerHTML = "";
+    this.#gameGrid.replaceChildren();
     this.#fillGrid();
   }
 
@@ -345,7 +345,7 @@ class ModalWindow {
       modalContent.classList.remove("leader");
     }
     modalContent.classList.add("new");
-    modalContent.innerHTML = "";
+    modalContent.replaceChildren();
     modalContent.append(movesContainer);
     modalContent.append(newGameButton);
   }
@@ -356,7 +356,8 @@ class ModalWindow {
       modalContent.classList.remove("new");
     }
     modalContent.classList.add("leader");
-    modalContent.innerHTML = "";
+
+    modalContent.replaceChildren();
     const itemHeader = document.createElement("div");
     itemHeader.className = "modal__winner-item-header";
     const placeHeader = document.createElement("div");
