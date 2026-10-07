@@ -1,10 +1,18 @@
 .game__grid {
   display: grid;
-  grid-template-columns: repeat(4, 100px);
-  grid-template-rows: repeat(4, 100px);
+  grid-template-columns: repeat(4, 150px);
+  grid-template-rows: repeat(4, 150px);
   gap: 20px;
   &.grid-no-click {
     pointer-events: none;
     cursor: default;
   }
+}
+
+.game__stat {
+  font-size: 32px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
 }

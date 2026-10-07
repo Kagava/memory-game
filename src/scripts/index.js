@@ -1,4 +1,5 @@
 const body = document.body;
+const lbKey = "LEADERBOARD";
 
 class Card {
   #card = null;
@@ -91,10 +92,10 @@ class GameField {
   restertGame() {
     this.#valueOfMoves = 0;
     this.#valueOfRightPairs = 0;
-    this.#movesContainer.textContent = `${this.#valueOfMoves}`;
-    this.#pairsContainer.textContent = `${this.#valueOfRightPairs}/8`;
+    this.#movesContainer.textContent = `Ход: ${this.#valueOfMoves}`;
+    this.#pairsContainer.textContent = `Верные пары: ${this.#valueOfRightPairs}/8`;
     this.#suffleArray();
-    this.#gameGrid.innerHTML = "";
+    this.#gameGrid.replaceChildren();
     this.#fillGrid();
   }
 
@@ -207,29 +208,57 @@ class GameField {
   }
 
   #createInfo() {
+    const gameStat = document.createElement("div");
+    gameStat.className = "game__stat";
     const movesContainer = document.createElement("div");
     movesContainer.className = "game__moves-container";
-    movesContainer.textContent = `${this.#valueOfMoves}`;
+    movesContainer.textContent = `Ход: ${this.#valueOfMoves}`;
     this.#movesContainer = movesContainer;
 
     const pairsContainer = document.createElement("div");
     pairsContainer.className = "game__pairs-container";
-    pairsContainer.textContent = `${this.#valueOfRightPairs}/8`;
+    pairsContainer.textContent = `Верные пары: ${this.#valueOfRightPairs}/8`;
     this.#pairsContainer = pairsContainer;
 
-    this.#gameContainer.prepend(this.#pairsContainer);
-    this.#gameContainer.prepend(this.#movesContainer);
+    gameStat.append(this.#movesContainer);
+    gameStat.append(this.#pairsContainer);
+    this.#gameContainer.prepend(gameStat);
   }
 
   #changeValueOfMoves() {
-    this.#movesContainer.textContent = `${this.#valueOfMoves}`;
+    this.#movesContainer.textContent = `Ход: ${this.#valueOfMoves}`;
   }
 
   #changeValueOfRightPairs() {
-    this.#pairsContainer.textContent = `${this.#valueOfRightPairs}/8`;
+    this.#pairsContainer.textContent = `Верные пары: ${this.#valueOfRightPairs}/8`;
     if (this.#valueOfRightPairs === 8) {
       endGame();
     }
+  }
+}
+
+class Header {
+  constructor() {
+    this.#createHeader();
+  }
+
+  #createHeader() {
+    const header = document.createElement("header");
+    header.className = "header";
+
+    const buttonNewGame = document.createElement("button");
+    buttonNewGame.className = "header__button button-new-game";
+    buttonNewGame.addEventListener("click", newGame);
+    buttonNewGame.textContent = "Новая игра";
+    const buttonLeaderBoard = document.createElement("button");
+    buttonLeaderBoard.className = "header__button button-leaderboard";
+    buttonLeaderBoard.textContent = "Таблица лидеров";
+    buttonLeaderBoard.addEventListener("click", openLeaderBoard);
+
+    header.append(buttonNewGame);
+    header.append(buttonLeaderBoard);
+
+    body.append(header);
   }
 }
 
@@ -250,11 +279,13 @@ class ModalWindow {
     this.#curtain.classList.remove("curtain--closed");
   }
 
-  openModalWinners() {
+  openModalWinners(data) {
     if (!this.#modal) {
       this.#createModal();
     }
-    console.log("OPEN");
+    this.#fillModalHeader("Leader table".toUpperCase());
+    this.#leaderboardModal(data);
+    this.#curtain.classList.remove("curtain--closed");
   }
 
   #createModal() {
@@ -283,8 +314,8 @@ class ModalWindow {
 
   #fillDefaultModal() {
     const closeButton = document.createElement("button");
-    closeButton.className = "modal__close-button";
-    closeButton.textContent = "Закрыть";
+    closeButton.className = "modal__close-button modal__button";
+    closeButton.textContent = "X";
     const header = document.createElement("h2");
     header.className = "modal__header";
     const modalContent = document.createElement("div");
@@ -302,18 +333,89 @@ class ModalWindow {
 
   #endModal(metrix) {
     const movesContainer = document.createElement("div");
-    console.log(metrix);
     movesContainer.className = "modal__moves";
     movesContainer.innerText = `Количество ходов ${metrix.moves}`;
 
     const newGameButton = document.createElement("button");
-    newGameButton.className = "modal__new-game";
+    newGameButton.className = "modal__new-game modal__button";
     newGameButton.textContent = "НОВАЯ ИГРА";
     newGameButton.addEventListener("click", newGame);
     const modalContent = this.#modal.querySelector(".modal__content");
-    modalContent.innerHtml = "awe";
+    if (modalContent.classList.contains("leader")) {
+      modalContent.classList.remove("leader");
+    }
+    modalContent.classList.add("new");
+    modalContent.replaceChildren();
     modalContent.append(movesContainer);
     modalContent.append(newGameButton);
+  }
+
+  #leaderboardModal(data) {
+    const modalContent = this.#modal.querySelector(".modal__content");
+    if (modalContent.classList.contains("new")) {
+      modalContent.classList.remove("new");
+    }
+    modalContent.classList.add("leader");
+
+    modalContent.replaceChildren();
+    const itemHeader = document.createElement("div");
+    itemHeader.className = "modal__winner-item-header";
+    const placeHeader = document.createElement("div");
+    const movesHeader = document.createElement("div");
+    const timeHeader = document.createElement("div");
+    placeHeader.textContent = "Место";
+    movesHeader.textContent = "Количество ходов";
+    timeHeader.textContent = "Дата";
+    itemHeader.append(placeHeader);
+    itemHeader.append(movesHeader);
+    itemHeader.append(timeHeader);
+    modalContent.append(itemHeader);
+    for (let i = 0; i < 10; i++) {
+      if (!data[i]) {
+        break;
+      }
+      const item = document.createElement("div");
+      const place = document.createElement("div");
+      const moves = document.createElement("div");
+      const time = document.createElement("div");
+      item.className = "modal__winner-item";
+      place.textContent = `${i + 1}`;
+      moves.textContent = `${data[i].moves}`;
+      const date = new Date(data[i].time);
+      const currentDate = `${String(date.getDay()).padStart(2, 0)}:${String(date.getMonth()).padStart(2, 0)}:${date.getFullYear()}`;
+      time.textContent = `${currentDate}`;
+      item.append(place);
+      item.append(moves);
+      item.append(time);
+      modalContent.append(item);
+    }
+  }
+}
+
+class LocalStorage {
+  #leaderboardObj = null;
+
+  constructor() {}
+
+  getData() {
+    this.#getDataFromLc();
+    return this.#leaderboardObj;
+  }
+
+  #getDataFromLc() {
+    this.#leaderboardObj = JSON.parse(localStorage.getItem(lbKey));
+    const copyLb = this.#leaderboardObj.slice();
+    this.#leaderboardObj = copyLb.sort((a, b) => {
+      if (a.moves > b.moves) {
+        return 1;
+      } else if (a.moves === b.moves) {
+        const aDate = Number(new Date(a.time));
+        const bDate = Number(new Date(b.time));
+        return aDate > bDate ? 1 : -1;
+      } else {
+        return -1;
+      }
+    });
   }
 }
 
@@ -334,13 +436,38 @@ function gridClick(e) {
 }
 
 function endGame() {
-  gameModal.openModalEnd(gameFiled.getMetrix());
+  const moves = gameFiled.getMetrix();
+  const date = new Date();
+
+  gameModal.openModalEnd(moves);
+
+  const lb = JSON.parse(localStorage.getItem(lbKey));
+
+  const newRecord = {
+    moves: moves.moves,
+    time: Number(date),
+  };
+
+  if (!lb) {
+    const lcArray = [newRecord];
+    localStorage.setItem(lbKey, JSON.stringify(lcArray));
+  } else {
+    lb.push(newRecord);
+    localStorage.setItem(lbKey, JSON.stringify(lb));
+  }
 }
 
 function newGame() {
-  console.log("NEW GAME");
   gameFiled.restertGame();
 }
+
+function openLeaderBoard() {
+  const lc = new LocalStorage();
+  const data = lc.getData();
+  gameModal.openModalWinners(data);
+}
+
+const header = new Header();
 
 const gameModal = new ModalWindow();
 
